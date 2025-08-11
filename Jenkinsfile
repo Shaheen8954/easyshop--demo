@@ -8,7 +8,6 @@ pipeline {
         DOCKER_IMAGE_NAME = 'shaheen8954/easyshop-demo'
         DOCKER_MIGRATION_IMAGE_NAME = 'shaheen8954/easyshop-backend'
         DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
-        AWS_CREDENTIALS = credentials('aws-credentials')
         GITHUB_CREDENTIALS = credentials('github-credentials')
         GIT_BRANCH = "main"
     }
