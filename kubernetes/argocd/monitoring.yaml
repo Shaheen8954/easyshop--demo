@@ -22,11 +22,11 @@ spec:
               nginx.ingress.kubernetes.io/ssl-verify: "false"
               nginx.ingress.kubernetes.io/hsts: "false"
             hosts:
-              - grafana.letsdeployit.com
+              - grafana.shaheen.homes
             tls:
               - secretName: grafana-tls
                 hosts:
-                  - grafana.letsdeployit.com
+                  - grafana.shaheen.homes
           dashboardProviders:
             dashboardproviders.yaml:
               apiVersion: 1
@@ -55,11 +55,11 @@ spec:
               nginx.ingress.kubernetes.io/ssl-verify: "false"
               nginx.ingress.kubernetes.io/hsts: "false"
             hosts:
-              - prometheus.letsdeployit.com
+              - prometheus.shaheen.homes
             tls:
               - secretName: prometheus-tls
                 hosts:
-                  - prometheus.letsdeployit.com
+                  - prometheus.shaheen.homes
         # Add ArgoCD ServiceMonitor
         additionalServiceMonitors:
           - name: argocd

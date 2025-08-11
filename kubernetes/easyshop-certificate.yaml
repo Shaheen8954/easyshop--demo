@@ -5,7 +5,7 @@ metadata:
   namespace: easyshop
 spec:
   dnsNames:
-    - easyshop.letsdeployit.com
+    - shaheen.homes
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer

@@ -16,10 +16,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - argocd.letsdeployit.com
+    - argocd.shaheen.homes
     secretName: argocd-server-tls
   rules:
-  - host: argocd.letsdeployit.com
+  - host: argocd.shaheen.homes
     http:
       paths:
       - path: /

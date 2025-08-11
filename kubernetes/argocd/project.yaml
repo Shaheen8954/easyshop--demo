@@ -8,7 +8,7 @@ spec:
   
   # Project sources
   sourceRepos:
-  - https://github.com/iemafzalhassan/EasyShop-KIND
+  - https://github.com/Shaheen8954/easyshop--demo
   
   # Destination clusters and namespaces
   destinations:

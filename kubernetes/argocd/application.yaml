@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/iemafzalhassan/EasyShop-KIND.git
-    targetRevision: tf-DevOps
+    repoURL: https://github.com/Shaheen8954/easyshop--demo
+    targetRevision: main
     path: kubernetes
   destination:
     server: https://kubernetes.default.svc
