@@ -1,6 +1,6 @@
 locals {
 
-  region          = "us-east-2"
+  region          = "eu-west-1"
   environment     = "dev"
   tags = {
     Name          = "easyshop"
@@ -11,7 +11,7 @@ locals {
   # VPC Variables
   vpc_name        = "easyshop"
   vpc_cidr        = "10.0.0.0/16"
-  azs             = ["us-east-2a", "us-east-2b"]
+  azs             = ["eu-west-1a", "eu-west-1b"]
   public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
   private_subnets = ["10.0.3.0/24", "10.0.4.0/24"]
   intra_subnets   = ["10.0.5.0/24", "10.0.6.0/24"]
