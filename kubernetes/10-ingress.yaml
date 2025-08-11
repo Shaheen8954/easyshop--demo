@@ -20,10 +20,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - shaheen.homes
+    - app.shaheen.homes
     secretName: easyshop-tls
   rules:
-  - host: shaheen.homes
+  - host: app.shaheen.homes
     http:
       paths:
       - path: /
