@@ -239,3 +239,25 @@ EOTWELCOME
 
 # Run main function
 main 
+
+# NGINX Ingress + Cert-Manager
+
+# NGINX Installation
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+kubectl create namespace ingress-nginx
+
+helm install nginx-ingress ingress-nginx/ingress-nginx   --namespace ingress-nginx   --set controller.service.type=LoadBalancer
+
+
+# Cert-Manager Installation
+
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+kubectl create namespace cert-manager
+
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --version v1.12.0 \
+  --set installCRDs=true

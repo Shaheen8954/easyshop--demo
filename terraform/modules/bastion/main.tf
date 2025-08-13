@@ -40,14 +40,19 @@ data "aws_ami" "ubuntu" {
 
 # Bastion Host Instance
 resource "aws_instance" "bastion" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
-  key_name      = aws_key_pair.bastion.key_name
-  subnet_id     = var.subnet_id
+  ami                = data.aws_ami.ubuntu.id
+  instance_type      = var.instance_type
+  key_name           = aws_key_pair.bastion.key_name
+  subnet_id          = var.subnet_id
   vpc_security_group_ids = [var.security_group_id]
   associate_public_ip_address = true
   iam_instance_profile = var.iam_instance_profile
-
+  user_data = <<-EOF
+    #!/bin/bash
+    ${file("${path.module}/install-tools.sh")}
+    ${file("${path.module}/system-service.sh")}
+  EOF
+  
   root_block_device {
     volume_size = 30
     volume_type = "gp3"
