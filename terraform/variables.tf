@@ -30,6 +30,6 @@ locals {
   sg_name = "easyshop-sg"
 
   # Bastion Variables
-  key_name      = "bastion_key.pem"
+  key_name      = "bastion_key"
   instance_type = "t3.large"
 }

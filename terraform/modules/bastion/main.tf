@@ -47,11 +47,7 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [var.security_group_id]
   associate_public_ip_address = true
   iam_instance_profile = var.iam_instance_profile
-  user_data = <<-EOF
-    #!/bin/bash
-    ${file("${path.module}/install-tools.sh")}
-    ${file("${path.module}/system-service.sh")}
-  EOF
+  user_data       = file("${path.module}/install-tools.sh")
   
   root_block_device {
     volume_size = 30

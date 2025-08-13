@@ -1,58 +1,52 @@
 #!/bin/bash
 
+# Update system and install core packages
+sudo apt update
+sudo apt install -y fontconfig openjdk-17-jre 
+
+# Jenkins installation
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+sudo apt-get -y install jenkins
+
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+
+# Docker installation
+sudo apt-get update
+sudo apt-get install docker.io -y
+
+# User group permission
+sudo usermod -aG docker $USER
+sudo usermod -aG docker jenkins
+
+sudo systemctl restart docker
+sudo systemctl restart jenkins
+
+# Install dependencies and Trivy
+sudo apt-get install wget apt-transport-https gnupg lsb-release snapd -y
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+sudo apt-get update -y
+sudo apt-get install trivy -y
+
+# AWS CLI installation
+sudo snap install aws-cli --classic
+
+# Helm installation
+sudo snap install helm --classic
+
+# Kubectl installation
+sudo snap install kubectl --classic
+
 # Exit on error
 set -e
 
-# Colors for output (Hacker-style)
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-WHITE='\033[1;37m'
-NC='\033[0m'
-
-# Fancy banner
-print_banner() {
-    echo -e "${CYAN}"
-    echo "╔══════════════════════════════════════════╗"
-    echo "║      EasyShop Tool Installation         ║"
-    echo "║        DevOps Tools Installer           ║"
-    echo "╚══════════════════════════════════════════╝"
-    echo -e "${NC}"
-}
-
-# Logging functions with timestamps
-log() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')] ${1}${NC}"
-}
-
-warn() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%d %H:%M:%S')] ⚠️  WARNING: ${1}${NC}"
-}
-
-error() {
-    echo -e "${RED}[$(date +'%Y-%m-%d %H:%M:%S')] ❌ ERROR: ${1}${NC}"
-}
-
-info() {
-    echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')] ℹ️  ${1}${NC}"
-}
-
-success() {
-    echo -e "${WHITE}[$(date +'%Y-%m-%d %H:%M:%S')] ✅ ${1}${NC}"
-}
-
-# Function to check if a command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
-
-# Main installation function
-main() {
-    print_banner
-
-    # Update system packages
+  # Update system packages
     info "Updating system packages..."
     sudo apt-get update -y
     sudo apt-get upgrade -y
@@ -78,30 +72,7 @@ main() {
         python3-dev
     success "Dependencies installed"
 
-    # Install AWS CLI
-    if ! command_exists aws; then
-        info "Installing AWS CLI..."
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        sudo ./aws/install
-        rm -rf aws awscliv2.zip
-        success "AWS CLI installed"
-    else
-        info "AWS CLI already installed"
-    fi
-
-    # Install kubectl
-    if ! command_exists kubectl; then
-        info "Installing kubectl..."
-        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        rm kubectl
-        success "kubectl installed"
-    else
-        info "kubectl already installed"
-    fi
-
-    # Install eksctl
+  # Install eksctl
     if ! command_exists eksctl; then
         info "Installing eksctl..."
         curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
@@ -111,18 +82,7 @@ main() {
         info "eksctl already installed"
     fi
 
-    # Install Helm
-    if ! command_exists helm; then
-        info "Installing Helm..."
-        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-        chmod 700 get_helm.sh
-        ./get_helm.sh
-        rm get_helm.sh
-        success "Helm installed"
-    else
-        info "Helm already installed"
-    fi
-
+   
     # Install kubectl-aws-auth
     if ! command_exists aws-iam-authenticator; then
         info "Installing kubectl-aws-auth..."
@@ -159,30 +119,6 @@ main() {
     echo 'source <(argocd completion bash)' >> ~/.bashrc
     success "Bash completion configured"
 
-    # Create useful aliases
-    info "Creating useful aliases..."
-    cat >> ~/.bashrc << 'EOF'
-# Kubernetes aliases
-alias k='kubectl'
-alias kg='kubectl get'
-alias kd='kubectl describe'
-alias kx='kubectl exec -it'
-alias kl='kubectl logs'
-alias kaf='kubectl apply -f'
-alias kdf='kubectl delete -f'
-
-# Helm aliases
-alias h='helm'
-alias hls='helm list'
-alias hlsa='helm list -A'
-
-# ArgoCD aliases
-alias a='argocd'
-alias ag='argocd app get'
-alias as='argocd app sync'
-EOF
-    success "Aliases created"
-
     # Verify installations
     info "Verifying installations..."
     echo -e "\n${CYAN}Installed Tools Versions${NC}"
@@ -193,52 +129,6 @@ EOF
     echo -e "${BLUE}Helm:${NC} ${GREEN}$(helm version --short 2>&1)${NC}"
     echo -e "${BLUE}ArgoCD:${NC} ${GREEN}$(argocd version --client --short 2>&1)${NC}"
     echo -e "${YELLOW}===========================================${NC}"
-
-    # Create welcome message
-    info "Creating welcome message..."
-    cat <<'EOTWELCOME' > ~/welcome.txt
-=======================================================
-Welcome to EasyShop DevOps Environment
-=======================================================
-
-Your environment is ready with the following tools:
-
-1. Kubernetes Tools:
-   - kubectl (for managing Kubernetes resources)
-   - eksctl (for managing EKS clusters)
-   - Helm (for package management)
-   - ArgoCD CLI (for GitOps operations)
-
-2. AWS Tools:
-   - AWS CLI (for AWS operations)
-   - aws-iam-authenticator (for EKS authentication)
-
-Useful Aliases:
-- k: kubectl
-- kg: kubectl get
-- kd: kubectl describe
-- kl: kubectl logs
-- h: helm
-- a: argocd
-
-To get started:
-1. Run 'source ~/.bashrc' to load aliases
-2. Use 'kubectl get nodes' to verify cluster connection
-3. Run './deploy-applications.sh' to deploy applications
-
-For more information about the deployment process,
-check the documentation in the repository.
-
-=======================================================
-EOTWELCOME
-
-    success "Tool installation completed successfully! 🚀"
-    info "Please run 'source ~/.bashrc' to apply the changes to your current shell"
-    info "Run './deploy-applications.sh' to deploy applications to your cluster"
-}
-
-# Run main function
-main 
 
 # NGINX Ingress + Cert-Manager
 

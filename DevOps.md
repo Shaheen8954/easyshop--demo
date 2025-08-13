@@ -102,8 +102,8 @@ Install & Configure AWS CLI
 ###  Generate SSH Key
 
 > ```bash
-> ssh-keygen -f terra-key
-> chmod 400 terra-key
+> ssh-keygen -f bastion_key
+> chmod 400 bastion_key
 > ```
 
 ###  Infrastructure Setup
@@ -119,13 +119,13 @@ Install & Configure AWS CLI
 ###  SSH into EC2
 
 > ```bash
-> ssh -i terra-key ubuntu@<public-ip>
+> ssh -i bastion_key ubuntu@<public-ip>
 > ```
 
 ###  Update Kubeconfig
 
 > ```bash
-> aws eks --region eu-west-1 update-kubeconfig --name tws-eks-cluster
+> aws eks --region eu-west-1 update-kubeconfig --name easyshop-cluster
 > kubectl get nodes
 > ```
 
@@ -136,7 +136,6 @@ Install & Configure AWS CLI
 ```bash
 cd /modules/bastion
 ./install-tools.sh
-./system-service.sh
 ./deploy-applications.sh
 ```
 
@@ -201,22 +200,6 @@ Install:
 ---
 
 ##  Continuous Deployment Setup (CD)
-
-### SSH into Bastion
-> ```bash
-> ssh -i terra-key ubuntu@<bastion-ip>
->```
-
-### Configure AWS CLI
-
-> ```bash
-> aws configure
-> ```
-
-### Update kubeconfig
-> ```bash
-> aws eks update-kubeconfig --region eu-west-1 --name tws-eks-cluster
-> ```
 
 ---
 
